@@ -1,0 +1,26 @@
+name: Build macOS Dylib
+
+# Скрипт будет запускаться каждый раз, когда вы обновляете код (push)
+on: [push, workflow_dispatch]
+
+jobs:
+  build:
+    # Запускаем сборку на официальном сервере macOS от GitHub
+    runs-on: macos-latest
+
+    steps:
+    # 1. Скачиваем ваш код из репозитория на сервер
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    # 2. Компилируем dylib с помощью встроенного в macOS компилятора Clang
+    - name: Compile Dylib
+      run: |
+        clang -dynamiclib -o mylibrary.dylib main.c
+
+    # 3. Сохраняем готовый файл, чтобы вы могли его скачать
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: macos-dylib
+        path: mylibrary.dylib
